@@ -19,14 +19,21 @@ struct OperatorFun {
 	opfun fun;
 };
 
+/**
+*	@brief A mini calculator, that works only with numerical keys and two extra buttons.
+*/
 class Calc {
 public:
 	Calc(LedDisplay *display);
 	Calc(int(&ledPins)[LEDS_COUNT], int(&anodes)[DIGITS_COUNT]);
 
+	// Cycle through the operators
 	void cycleOperators();
+	// Apply the current operator and show the result
 	void applyOperator();
+	// Enter a digit (append to current number)
 	void enterDigit(int digit);
+	// Reset calculator
 	void reset();
 
 private:

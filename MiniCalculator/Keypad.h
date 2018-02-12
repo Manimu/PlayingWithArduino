@@ -21,18 +21,29 @@
 #define KEY_STAR	(KEY_SPECIAL + 4)
 #define KEY_HASH	(KEY_SPECIAL + 5)
 
-typedef int Key;
-//typedef void(*keyCallback)(Key);
+using Key = int;
 using keyCallback = void(*)(Key);
 
+
+/**
+*	@brief Abstraction of the Elegoo matrix keypad
+*/
 class Keypad {
 public:
+	// Setup the Arduino pins for the keypad
 	void setup(int (&hlines)[KEYPAD_LINES], int(&vlines)[KEYPAD_LINES]);
-	bool isSpecialKey(Key key);
-	Key getPressedKey();
 
+	// Returns true, when the Key is not a number, but a special key
+	bool isSpecialKey(Key key);
+	// Returns the currently pressed key
+	Key getPressedKey();
+	// Call this regularly (e.g. Arduino loop() function) and get feedback about key changes
+	// over the callback functions 'keyDown' and 'keyUp'.
 	void process();
+
+	// Callback. Will be caled once a key is pressed down
 	keyCallback keyDown;
+	// Callback. Will be called once a key is released.
 	keyCallback keyUp;
 
 private:

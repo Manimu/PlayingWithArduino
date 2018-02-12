@@ -39,25 +39,55 @@
 
 #define MAX_LED_DISPLAYS_FOR_TIMER 4
 
+/**
+*	@brief Abstraction of a display build out of 7-Segment LED blocks. The blocks must have a
+		common anode. Multiplexing will be managed by this class. There are two modes of operation:
+
+	1) Either call the refresh()-function regularly, e.g. in the Arduino's loop(). This can lead to
+		different dim levels of the display, depending on the time, the loop() needs to process all
+		the other statements, before calling refresh() again.
+	
+		OR
+	
+	2) Call once the registerTimer()-function. The display's refresh will then be taken over by Arduinos
+		internal timer. Do not call refresh() in this case. Be aware, that in this case, the AD pins will
+		stop working!
+*/
 class LedDisplay {
 public:
+	// Constructor
 	LedDisplay();
-	void setup(int (&ledPins)[LEDS_COUNT], int (&anodes)[DIGITS_COUNT]);
 
-	/* use refreh in your loop(), when not using the registerTimer() */
+	/**
+	*	@brief Setup LedDislay with the used pins.
+	*
+	*	@param ledPins is an array of the led cathodes in order a, b, c, d, e, f, g.
+	*	@param anodes is an array of the anodes of each Led 7 segment block.
+	*/
+	void setup(int (&ledPins)[LEDS_COUNT], int (&anodes)[DIGITS_COUNT]);
+	// Refresh the display. Use refreh in your loop(), when not using registerTimer()
 	void refresh();
-	/* registerTimer() in your setup(), when you do not want to refresh manually in loop */
+	// registerTimer() in your setup(), when you do not want to refresh manually in loop
 	void registerTimer();
 
+	// Set the digits on the display via an array.
 	void setDigits(int(&d)[DIGITS_COUNT]);
+	// Set the digits on the display individually
 	void setDigits(int d3, int d2, int d1, int d0);
 	
+	// Clears the display (all LEDs off), inverse of setLedTest().
 	void clear();
+	// Set the decimal number to be shown on the display. This function supports negative numbers.
 	void setDecimal(int number);
+	// Set a number with arbitrary base on the display. 
 	void setNumber(int number, int base);
+	// Set a hexadecimal number to be shown on the display.
 	void setHex(int number);
+	// Set a octal number to be shown on the display.
 	void setOct(int number);
+	// Set a binary number to be shown on the display;.
 	void setBin(int number);
+	// Enable all LEDs, inverse of clear().
 	void setLedTest();
 
 private:
