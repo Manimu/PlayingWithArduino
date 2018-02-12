@@ -84,6 +84,9 @@
   <ItemGroup>
     <ClInclude Include="__vm\.FadingBlinker.vsarduino.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="sketch.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
