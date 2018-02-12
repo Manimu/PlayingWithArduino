@@ -41,7 +41,7 @@ public:
 	// over the callback functions 'keyDown' and 'keyUp'.
 	void process();
 
-	// Callback. Will be caled once a key is pressed down
+	// Callback. Will be called once a key is pressed down
 	keyCallback keyDown;
 	// Callback. Will be called once a key is released.
 	keyCallback keyUp;

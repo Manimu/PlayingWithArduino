@@ -41,17 +41,17 @@
 
 /**
 *	@brief Abstraction of a display build out of 7-Segment LED blocks. The blocks must have a
-		common anode. Multiplexing will be managed by this class. There are two modes of operation:
-
-	1) Either call the refresh()-function regularly, e.g. in the Arduino's loop(). This can lead to
-		different dim levels of the display, depending on the time, the loop() needs to process all
-		the other statements, before calling refresh() again.
-	
-		OR
-	
-	2) Call once the registerTimer()-function. The display's refresh will then be taken over by Arduinos
-		internal timer. Do not call refresh() in this case. Be aware, that in this case, the AD pins will
-		stop working!
+*		common anode. Multiplexing will be managed by this class. There are two modes of operation:
+*
+*	1) Either call the refresh()-function regularly, e.g. in the Arduino's loop(). This can lead to
+*		different dim levels of the display, depending on the time, the loop() needs to process all
+*		the other statements, before calling refresh() again.
+*	
+*		OR
+*	
+*	2) Call once the registerTimer()-function. The display's refresh will then be taken over by Arduinos
+*		internal timer. Do not call refresh() in this case. Be aware, that in this case, the AD pins will
+*		stop working!
 */
 class LedDisplay {
 public:
