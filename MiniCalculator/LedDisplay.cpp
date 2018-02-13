@@ -51,13 +51,6 @@ LedDisplay::LedDisplay() {
 
 	setup_done = false;
 	activeDigit = 0;
-	
-	for (int i = 0; i < MAX_LED_DISPLAYS_FOR_TIMER; ++i) {
-		if (LedDisplays[i] == 0) {
-			LedDisplays[i] = this;
-			break;
-		}
-	}
 }
 
 void LedDisplay::setup(int (&ledPins)[LEDS_COUNT], int (&anodes)[DIGITS_COUNT]) {
@@ -88,6 +81,14 @@ void LedDisplay::registerTimer() {
 	TIMSK0 |= (1 << OCIE0A);			// enable timer compare interrupt
 
 	sei();
+
+	//register this class for ISR update
+	for (int i = 0; i < MAX_LED_DISPLAYS_FOR_TIMER; ++i) {
+		if (LedDisplays[i] == 0 && LedDisplays[i] != this) {
+			LedDisplays[i] = this;
+			break;
+		}
+	}
 }
 
 ISR(TIMER0_COMPA_vect) {
