@@ -47,12 +47,10 @@ enum Characters : uint8_t {
 	Minus = SegmG,
 };
 
-constexpr int LedsCount = 7; //REFACTOR all #defines into constexpr This is an example!
-
-#define LEDS_COUNT 7
-#define DIGITS_COUNT 4
-#define DIGITS_NONE -1
-#define MAX_LED_DISPLAYS_FOR_TIMER 4
+constexpr int LEDS_COUNT = 7;
+constexpr int DIGITS_COUNT = 4;
+constexpr int DIGITS_NONE = -1;
+constexpr int MAX_LED_DISPLAYS_FOR_TIMER = 4;
 
 /**
 *	@brief Abstraction of a display build out of 7-Segment LED blocks. The blocks must have a
