@@ -8,35 +8,50 @@
 #else
 	#include "WProgram.h"
 #endif
+/*
+   a
+   ==
+ f|g |b
+   ==
+ e|d |c
+   ==
+*/
+enum Characters : uint8_t {
+	Blank = 0x00,
+	SegmA = 0x01,
+	SegmB = 0x02,
+	SegmC = 0x04,
+	SegmD = 0x08,
+	SegmE = 0x10,
+	SegmF = 0x20,
+	SegmG = 0x40,
+
+	Num0 = SegmA | SegmB | SegmC | SegmD | SegmE | SegmF,
+	Num1 = SegmB | SegmC,
+	Num2 = SegmA | SegmB | SegmG | SegmE | SegmD,
+	Num3 = SegmA | SegmB | SegmC | SegmD | SegmG,
+	Num4 = SegmF | SegmG | SegmB | SegmC,
+	Num5 = SegmA | SegmF | SegmG | SegmC | SegmD,
+	Num6 = SegmA | SegmF | SegmE | SegmD | SegmC | SegmG,
+	Num7 = SegmA | SegmB | SegmC,
+	Num8 = SegmA | SegmB | SegmC | SegmD | SegmE | SegmF | SegmG,
+	Num9 = SegmG | SegmF | SegmA | SegmB | SegmC | SegmD,
+
+	A = SegmE | SegmF | SegmA | SegmB | SegmC | SegmG,
+	B = SegmF | SegmE | SegmD | SegmC | SegmG,
+	C = SegmA | SegmF | SegmE | SegmD,
+	D = SegmG | SegmE | SegmD | SegmC | SegmB,
+	E = SegmA | SegmF | SegmE | SegmD | SegmG,
+	F = SegmA | SegmF | SegmE | SegmG,
+
+	Minus = SegmG,
+};
+
+constexpr int LedsCount = 7; //REFACTOR all #defines into constexpr This is an example!
 
 #define LEDS_COUNT 7
 #define DIGITS_COUNT 4
 #define DIGITS_NONE -1
-
-#define DIGIT_A 10
-#define DIGIT_B (DIGIT_A + 1)
-#define DIGIT_C (DIGIT_B + 1)
-#define DIGIT_D (DIGIT_C + 1)
-#define DIGIT_E (DIGIT_D + 1)
-#define DIGIT_F (DIGIT_E + 1)
-#define DIGIT_G (DIGIT_F + 1)
-#define DIGIT_H (DIGIT_G + 1)
-#define DIGIT_I 1
-#define DIGIT_J (DIGIT_H + 1)
-#define DIGIT_S 5
-#define DIGIT_T 7
-
-#define DIGIT_SEGM_A (DIGIT_J + 1)
-#define DIGIT_SEGM_B (DIGIT_SEGM_A + 1)
-#define DIGIT_SEGM_C (DIGIT_SEGM_A + 2)
-#define DIGIT_SEGM_D (DIGIT_SEGM_A + 3)
-#define DIGIT_SEGM_E (DIGIT_SEGM_A + 4)
-#define DIGIT_SEGM_F (DIGIT_SEGM_A + 5)
-#define DIGIT_SEGM_G (DIGIT_SEGM_A + 6)
-
-#define DIGIT_BLANK (DIGIT_SEGM_G + 1)
-#define DIGIT_MINUS DIGIT_SEGM_G
-
 #define MAX_LED_DISPLAYS_FOR_TIMER 4
 
 /**
@@ -71,9 +86,9 @@ public:
 	void registerTimer();
 
 	// Set the digits on the display via an array.
-	void setDigits(int(&d)[DIGITS_COUNT]);
+	void setDigits(uint8_t(&d)[DIGITS_COUNT]);
 	// Set the digits on the display individually
-	void setDigits(int d3, int d2, int d1, int d0);
+	void setDigits(uint8_t d3, uint8_t d2, uint8_t d1, uint8_t d0);
 	
 	// Clears the display (all LEDs off), inverse of setLedTest().
 	void clear();
@@ -93,13 +108,12 @@ public:
 private:
 	int ledPins[LEDS_COUNT];
 	int anodePins[DIGITS_COUNT];
-	volatile int digits[DIGITS_COUNT];
+	volatile uint8_t digits[DIGITS_COUNT];
 	int activeDigit;
 	bool setup_done;
 	
 	void chooseLedBlock(int index);
-	void displayDigit(int digit);
-	void inline validateDigit(int& digit);
+	void displayDigit(uint8_t c);
 };
 
 #endif

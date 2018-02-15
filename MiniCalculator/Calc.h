@@ -15,7 +15,7 @@
 using opfun = long(*)(long, long);
 
 struct OperatorFun {
-	int Name[4];
+	uint8_t Name[4];
 	opfun fun;
 };
 

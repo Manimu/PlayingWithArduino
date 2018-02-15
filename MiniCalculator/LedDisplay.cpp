@@ -1,53 +1,20 @@
 
 #include "LedDisplay.h"
-/*
-	  a
-	  ==
-	f|g |b
-	  ==
-	e|d |c
-	  ==
-*/
-static const bool Digits[][LEDS_COUNT] =
-{  // a  b  c  d  e  f  g
-	{ 1, 1, 1, 1, 1, 1, 0 },	//0
-	{ 0, 1, 1, 0, 0, 0, 0 },	//1
-	{ 1, 1, 0, 1, 1, 0, 1 },	//2
-	{ 1, 1, 1, 1, 0, 0, 1 },	//3
-	{ 0, 1, 1, 0, 0, 1, 1 },	//4
-	{ 1, 0, 1, 1, 0, 1, 1 },	//5
-	{ 1, 0, 1, 1, 1, 1, 1 },	//6
-	{ 1, 1, 1, 0, 0, 0, 0 },	//7
-	{ 1, 1, 1, 1, 1, 1, 1 },	//8
-	{ 1, 1, 1, 1, 0, 1, 1 },	//9
 
-	{ 1, 1, 1, 0, 1, 1, 1 },	//DIGIT_A
-	{ 0, 0, 1, 1, 1, 1, 1 },	//DIGIT_B
-	{ 1, 0, 0, 1, 1, 1, 0 },	//DIGIT_C
-	{ 0, 1, 1, 1, 1, 0, 1 },	//DIGIT_D
-	{ 1, 0, 0, 1, 1, 1, 1 },	//DIGIT_E
-	{ 1, 0, 0, 0, 1, 1, 1 },	//DIGIT_F
-	{ 1, 0, 1, 1, 1, 1, 0 },	//DIGIT_G
-	{ 0, 1, 1, 0, 1, 1, 1 },	//DIGIT_H
-	{ 0, 1, 1, 1, 1, 0, 0 },	//DIGIT_J
-
-	{ 1, 0, 0, 0, 0, 0, 0 },	//DIGIT_SEGM_A
-	{ 0, 1, 0, 0, 0, 0, 0 },	//DIGIT_SEGM_B
-	{ 0, 0, 1, 0, 0, 0, 0 },	//DIGIT_SEGM_C
-	{ 0, 0, 0, 1, 0, 0, 0 },	//DIGIT_SEGM_D
-	{ 0, 0, 0, 0, 1, 0, 0 },	//DIGIT_SEGM_E
-	{ 0, 0, 0, 0, 0, 1, 0 },	//DIGIT_SEGM_F
-	{ 0, 0, 0, 0, 0, 0, 1 },	//DIGIT_SEGM_G
-
-	{ 0, 0, 0, 0, 0, 0, 0 },	//DIGIT_BLANK
+static const uint8_t CharactersLookup[]{
+	Num0, 
+	Num1, Num2, Num3, 
+	Num4, Num5, Num6, 
+	Num7, Num8, Num9,
+	A, B, C, D, E, F,
 };
-static const int sizeOfDigits = sizeof(Digits) / LEDS_COUNT / sizeof(bool);
+static const int numOfCharactersInLookup = sizeof(CharactersLookup) / sizeof(uint8_t);
 
 LedDisplay *LedDisplays[MAX_LED_DISPLAYS_FOR_TIMER];
 
 LedDisplay::LedDisplay() {
 	for (int i = 0; i < DIGITS_COUNT; ++i)
-		digits[i] = DIGIT_BLANK;
+		digits[i] = Characters::Blank;
 
 	setup_done = false;
 	activeDigit = 0;
@@ -100,55 +67,54 @@ ISR(TIMER0_COMPA_vect) {
 	}
 }
 
-void LedDisplay::setDigits(int(&d)[DIGITS_COUNT]) {
+void LedDisplay::setDigits(uint8_t(&d)[DIGITS_COUNT]) {
 	setDigits(d[3], d[2], d[1], d[0]);
 }
 
-void LedDisplay::setDigits(int d3, int d2, int d1, int d0) {
-	validateDigit(d0); this->digits[0] = d0;
-	validateDigit(d1); this->digits[1] = d1;
-	validateDigit(d2); this->digits[2] = d2;
-	validateDigit(d3); this->digits[3] = d3;
+void LedDisplay::setDigits(uint8_t d3, uint8_t d2, uint8_t d1, uint8_t d0) {
+	digits[0] = d0;
+	digits[1] = d1;
+	digits[2] = d2;
+	digits[3] = d3;
 }
 
 void LedDisplay::clear() {
-	setDigits(DIGIT_BLANK, DIGIT_BLANK, DIGIT_BLANK, DIGIT_BLANK);
+	setDigits(Blank, Blank, Blank, Blank);
 }
 
 void LedDisplay::setDecimal(int number) {
 	bool needToSetSign = number < 0;
-	int d[DIGITS_COUNT];
+	uint8_t d[DIGITS_COUNT];
 
 	for (int i = 0; i < DIGITS_COUNT; ++i) {
-		int digit = abs(number) % 10;
-		
 		if (number == 0 && i > 0) {
-			digit = DIGIT_BLANK;
+			d[i] = Characters::Blank;
 			if (needToSetSign) {
-				digit = DIGIT_MINUS;
+				d[i] = Characters::Minus;
 				needToSetSign = false;
 			}
 		}
-		d[i] = digit;
+		else {
+			d[i] = CharactersLookup[abs(number) % 10];
+		}
 		number /= 10;
 	}
 	setDigits(d);
 }
 
 void LedDisplay::setNumber(int number, int base) {
-	if (base <= 1 || base > 16)
+	if (base <= 1 || base > numOfCharactersInLookup)
 		return;	//TODO: WHAT TO DO HERE?
 	if (number < 0)
 		return; //TODO: Minus handling?
 
-	int d[DIGITS_COUNT];
+	uint8_t d[DIGITS_COUNT];
 	for (int i = 0; i < DIGITS_COUNT; ++i) {
-		int digit = abs(number) % base;
+		if (number == 0 && i > 0) 
+			d[i] = Characters::Blank;
+		else 
+			d[i] = CharactersLookup[(number) % base];
 
-		if (number == 0 && i > 0) {
-			digit = DIGIT_BLANK;
-		}
-		d[i] = digit;
 		number /= base;
 	}
 	setDigits(d);
@@ -167,7 +133,7 @@ void LedDisplay::setBin(int number) {
 }
 
 void LedDisplay::setLedTest() {
-	setDigits(8, 8, 8, 8);
+	setDigits(Num8, Num8, Num8, Num8);
 }
 
 void LedDisplay::refresh() {
@@ -188,15 +154,9 @@ void LedDisplay::chooseLedBlock(int index) {
 		digitalWrite(anodePins[i], i == index);
 }
 
-void LedDisplay::displayDigit(int digit) {
-	validateDigit(digit);
-
-	for (int i = 0; i < LEDS_COUNT; ++i) 
-		digitalWrite(ledPins[i], 1 != Digits[digit][i]);
+void LedDisplay::displayDigit(uint8_t c) {
+	//invert c, because we need to output LOW to switch ON the Led
+	for (int i = 0; i < LEDS_COUNT; ++i) {
+		digitalWrite(ledPins[i], ~c & (1 << i));
+	}
 }
-
-void inline LedDisplay::validateDigit(int& digit) {
-	if (digit < 0 || digit >= sizeOfDigits)
-		digit = DIGIT_BLANK;
-}
-

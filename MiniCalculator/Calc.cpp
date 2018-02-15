@@ -9,19 +9,19 @@
 static OperatorFun operators[] =
 {
 	OperatorFun{
-		{ DIGIT_A, DIGIT_D ,DIGIT_D ,DIGIT_BLANK },
+		{ A, D ,D ,Blank },
 		[](long a, long b) { return a + b; }
 	},
 	OperatorFun{
-		{ 5, 7, DIGIT_A, DIGIT_A },
+		{ Num5, Num7, A, A },
 		[](long a, long b) {return a * b; }
 	},
 	OperatorFun{
-		{ DIGIT_D, DIGIT_E, DIGIT_C, DIGIT_BLANK },
+		{ D, E, C, Blank },
 		[](long a, long b) {return a - b; }
 	},
 	OperatorFun{
-		{ DIGIT_BLANK, DIGIT_D, 1, DIGIT_BLANK },
+		{ Blank, D, Num1, Blank },
 		[](long a, long b) {return a / b; }
 	}
 };
