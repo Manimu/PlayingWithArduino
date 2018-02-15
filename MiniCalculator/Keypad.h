@@ -9,17 +9,17 @@
 	#include "WProgram.h"
 #endif
 
-#define KEYPAD_LINES 4
-#define KEYPAD_PIN_UNASSIGNED -1
+constexpr int KEYPAD_LINES = 4;
+constexpr int KEYPAD_PIN_UNASSIGNED = -1;
 
-#define KEY_NONE	-1
-#define KEY_SPECIAL	10
-#define KEY_A		(KEY_SPECIAL + 0)
-#define KEY_B		(KEY_SPECIAL + 1)
-#define KEY_C		(KEY_SPECIAL + 2)
-#define KEY_D		(KEY_SPECIAL + 3)
-#define KEY_STAR	(KEY_SPECIAL + 4)
-#define KEY_HASH	(KEY_SPECIAL + 5)
+constexpr int KEY_NONE = -1;
+constexpr int KEY_SPECIAL = 10;
+constexpr int KEY_A =		(KEY_SPECIAL + 0);
+constexpr int KEY_B =		(KEY_SPECIAL + 1);
+constexpr int KEY_C =		(KEY_SPECIAL + 2);
+constexpr int KEY_D =		(KEY_SPECIAL + 3);
+constexpr int KEY_STAR =	(KEY_SPECIAL + 4);
+constexpr int KEY_HASH =	(KEY_SPECIAL + 5);
 
 using Key = int;
 using keyCallback = void(*)(Key);
